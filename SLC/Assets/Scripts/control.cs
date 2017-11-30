@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class control : MonoBehaviour {
     public int speed;
-    public int turn2,turn;
+    public int turn2,turn,minSpeed;
     public float drift ;
     private int torque;
     private Rigidbody2D rb;
@@ -25,11 +25,14 @@ public class control : MonoBehaviour {
             torque = turn;
         }
         else torque = turn2;
-        rb.AddForce(Input.GetAxis("Vertical") * speed * transform.up);
-        rb.angularVelocity = -Input.GetAxis("Horizontal")*torque;
+
+        rb.AddForce(-Input.GetAxis("Vertical") * speed * transform.up);
+        
         Vector2 forwardVel = transform.up * Vector2.Dot(rb.velocity,transform.up);
         Vector2 rightVel = transform.right * Vector2.Dot(rb.velocity, transform.right);
         rb.velocity = forwardVel + rightVel * drift;
+        if(Mathf.Abs(forwardVel.y) > minSpeed || Mathf.Abs(forwardVel.x) > minSpeed)
+        rb.angularVelocity = -Input.GetAxis("Horizontal") * torque;
 
     }
 }
