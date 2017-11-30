@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class control : MonoBehaviour {
-    public int turn ;
     public int speed;
+    public int turn2,turn;
     public float drift ;
+    private int torque;
     private Rigidbody2D rb;
 
     void Start () {
@@ -17,12 +18,15 @@ public class control : MonoBehaviour {
     }
 
     void FixedUpdate () {
-        if (Input.GetButton("Accelerate"))
+
+        
+        if (Input.GetAxis("Vertical") >= 0)
         {
-            rb.AddForce(this.transform.up * speed);
+            torque = turn;
         }
-        //rb.AddTorque(-Input.GetAxis("Horizontal") * turn);
-        rb.angularVelocity = -Input.GetAxis("Horizontal")*turn;
+        else torque = turn2;
+        rb.AddForce(Input.GetAxis("Vertical") * speed * transform.up);
+        rb.angularVelocity = -Input.GetAxis("Horizontal")*torque;
         Vector2 forwardVel = transform.up * Vector2.Dot(rb.velocity,transform.up);
         Vector2 rightVel = transform.right * Vector2.Dot(rb.velocity, transform.right);
         rb.velocity = forwardVel + rightVel * drift;
